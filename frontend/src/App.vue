@@ -117,6 +117,7 @@ h1 {
   padding: 10px 15px;
   border-radius: 8px;
   max-width: 80%;
+  white-space: pre-wrap; /* Preserve whitespace and formatting */
 }
 
 .message.user {
