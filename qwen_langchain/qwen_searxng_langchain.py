@@ -4,10 +4,13 @@ from langchain.agents import initialize_agent, Tool
 from langchain.agents import AgentType
 
 # Initialize Ollama with Qwen2.5-Coder-32B
-llm = OllamaLLM(model="qwen2.5-coder:32b")
+llm = OllamaLLM(
+    model="qwen2.5-coder:32b",
+    base_url="http://host.docker.internal:11434"
+)
 
-# Initialize SearxNG
-search = SearxSearchWrapper(searx_host="http://localhost:8080")
+# Initialize SearxNG with the container name
+search = SearxSearchWrapper(searx_host="http://searxng:8080")
 
 # Create a tool for web search
 tools = [
