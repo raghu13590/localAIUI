@@ -2,6 +2,11 @@ from langchain_ollama import OllamaLLM
 from langchain_community.utilities import SearxSearchWrapper
 from langchain.agents import initialize_agent, Tool
 from langchain.agents import AgentType
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+app = Flask(__name__)
+CORS(app)
 
 # Initialize Ollama with Qwen2.5-Coder-32B
 llm = OllamaLLM(
@@ -30,10 +35,15 @@ agent = initialize_agent(
     handle_parsing_errors=True
 )
 
-# Example usage
-query = input("Enter your question: ")
-try:
-    response = agent.invoke(query)
-    print(response)
-except ValueError as e:
-    print(f"Error: {e}")
+@app.route('/query', methods=['POST'])
+def query():
+    data = request.json
+    question = data.get('question')
+    try:
+        response = agent.invoke(question)
+        return jsonify({'response': response['output']})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=8081)

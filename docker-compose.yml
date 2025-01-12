@@ -7,8 +7,11 @@ services:
       - ./config:/etc/searxng
     environment:
       - SEARXNG_BASE_URL=http://localhost:8080/
-    networks:
-      - ai_network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 500M
 
   qwen_langchain:
     build:
@@ -17,15 +20,23 @@ services:
       - "8081:8081"
     volumes:
       - ./qwen_langchain:/app
-    stdin_open: true
-    tty: true
-    depends_on:
-      - searxng
-    networks:
-      - ai_network
+    environment:
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-networks:
-  ai_network:
-    driver: bridge
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000:80"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.2'
+          memory: 200M
