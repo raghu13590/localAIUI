@@ -87,8 +87,8 @@ export default {
 
 <style>
 .container {
-  max-width: 800px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 10px;
   padding: 20px;
   font-family: Arial, sans-serif;
 }
@@ -99,9 +99,7 @@ h1 {
 }
 
 .chat-container {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  height: 60vh;
+  height: calc(100vh - 200px);
   margin-bottom: 20px;
   overflow: hidden;
   display: flex;
