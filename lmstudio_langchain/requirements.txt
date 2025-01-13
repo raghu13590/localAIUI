@@ -4,3 +4,4 @@ langchain-core>=0.3.0,<0.4.0
 flask
 openai
 langchain_openai
+langchain_core

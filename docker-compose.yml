@@ -45,13 +45,9 @@ services:
     build:
       context: ./lmstudio_langchain
     ports:
-      - "8085:8085"
+      - "8082:8082"
     volumes:
       - ./lmstudio_langchain:/app
-    environment:
-      - BASE_URL=http://localhost:1234/v1  # Replace with your LMStudio API endpoint
-      - MODEL_NAME=local-model  # Replace with your model name
-      - OPENAI_API_KEY=not-needed  # LMStudio doesn't require an API key
     deploy:
       resources:
         limits:

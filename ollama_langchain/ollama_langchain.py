@@ -9,9 +9,8 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# Initialize Ollama with Qwen2.5-Coder-32B
 llm = OllamaLLM(
-    model="qwen2.5-coder:32b",
+    model="qwen2.5-coder:1.5b",
     base_url="http://host.docker.internal:11434"
 )
 
