@@ -58,4 +58,4 @@ if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == '--debug':
         run_without_flask()
     else:
-        app.run(host='0.0.0.0', port=8083)
+        app.run(host='0.0.0.0', port=8081)
