@@ -40,3 +40,22 @@ services:
         limits:
           cpus: '0.2'
           memory: 200M
+
+  lmstudio_langchain:
+    build:
+      context: ./lmstudio_langchain
+    ports:
+      - "8085:8085"
+    volumes:
+      - ./lmstudio_langchain:/app
+    environment:
+      - BASE_URL=http://localhost:1234/v1  # Replace with your LMStudio API endpoint
+      - MODEL_NAME=local-model  # Replace with your model name
+      - OPENAI_API_KEY=not-needed  # LMStudio doesn't require an API key
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
