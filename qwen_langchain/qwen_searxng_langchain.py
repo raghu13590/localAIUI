@@ -1,3 +1,4 @@
+import sys
 from langchain_ollama import OllamaLLM
 from langchain_community.utilities import SearxSearchWrapper
 from langchain.agents import initialize_agent, Tool
@@ -45,5 +46,16 @@ def query():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+def run_without_flask():
+    query = input("Enter your question: ")
+    try:
+        response = agent.invoke(query)
+        print(response)
+    except ValueError as e:
+        print(f"Error: {e}")
+
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8081)
+    if len(sys.argv) > 1 and sys.argv[1] == '--debug':
+        run_without_flask()
+    else:
+        app.run(host='0.0.0.0', port=8083)
