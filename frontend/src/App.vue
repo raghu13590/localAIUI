@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h1>Qwen AI Assistant</h1>
+    <h1>Ollama AI Assistant</h1>
 
     <div class="chat-container">
       <div class="messages" ref="messagesContainer">
