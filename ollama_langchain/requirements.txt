@@ -1,4 +1,5 @@
 langchain_ollama
 langchain_community
+duckduckgo-search
 flask
 flask-cors
