@@ -75,13 +75,55 @@ agent = initialize_agent(
     handle_parsing_errors=True
 )
 
+# Add new function to get models
+def get_available_models():
+    try:
+        logger.debug("Attempting to fetch models from Ollama...")
+        response = requests.get('http://host.docker.internal:11434/api/tags')
+        if response.status_code == 200:
+            models = response.json()
+            logger.debug(f"Successfully fetched models: {models}")
+            return [model['name'] for model in models['models']]
+        logger.warning(f"Failed to fetch models. Status code: {response.status_code}")
+        return []
+    except Exception as e:
+        logger.error(f"Error fetching models: {e}")
+        return []
+
+# Add new endpoint to get models
+@app.route('/models', methods=['GET'])
+def models():
+    logger.debug("Received request for models")
+    available_models = get_available_models()
+    logger.debug(f"Returning models: {available_models}")
+    return jsonify({'models': available_models})
+
+# Update query endpoint to accept model parameter
 @app.route('/query', methods=['POST'])
 def query():
     data = request.json
     question = data.get('question')
-    logger.debug(f"Received query: {question}")
+    model_name = data.get('model', 'QwQ')  # Default to QwQ if not specified
+    
+    logger.debug(f"Received query: {question} using model: {model_name}")
+    
+    # Create a new LLM instance with the selected model
+    current_llm = OllamaLLM(
+        model=model_name,
+        base_url="http://host.docker.internal:11434"
+    )
+    
+    # Create a new agent with the selected model
+    current_agent = initialize_agent(
+        tools,
+        current_llm,
+        agent=AgentType.STRUCTURED_CHAT_ZERO_SHOT_REACT_DESCRIPTION,
+        verbose=True,
+        handle_parsing_errors=True
+    )
+    
     try:
-        response = agent.invoke([HumanMessage(content=question)])
+        response = current_agent.invoke([HumanMessage(content=question)])
         logger.debug(f"Agent response: {response}")
         return jsonify({'response': response['output']})
     except Exception as e:

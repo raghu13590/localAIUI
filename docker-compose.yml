@@ -38,12 +38,9 @@ services:
     build:
       context: ./frontend
     ports:
-      - "3000:80"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.2'
-          memory: 200M
+      - "3000:3000"
+    depends_on:
+      - ollama_langchain
     networks:
       - localragnetwork
 

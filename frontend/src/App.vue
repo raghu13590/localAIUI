@@ -2,10 +2,28 @@
   <div class="container">
     <h1>Ollama AI Assistant</h1>
 
+    <div class="model-selector">
+      <label for="model-select">Select Model:</label>
+      <select v-model="selectedModel" id="model-select" :disabled="loadingModels">
+        <option v-if="loadingModels" value="">Loading models...</option>
+        <option v-else-if="modelError" value="">Error loading models</option>
+        <option v-else-if="availableModels.length === 0" value="">No models available</option>
+        <option v-else v-for="model in availableModels" :key="model" :value="model">
+          {{ model }}
+        </option>
+      </select>
+      <button v-if="modelError" @click="fetchModels" class="retry-button">
+        Retry
+      </button>
+    </div>
+
     <div class="chat-container">
       <div class="messages" ref="messagesContainer">
         <div v-for="(message, index) in messages" :key="index"
              :class="['message', message.type]">
+          <div class="message-header" v-if="message.model">
+            Model: {{ message.model }}
+          </div>
           <p>{{ message.text }}</p>
         </div>
       </div>
@@ -34,10 +52,35 @@ export default {
     return {
       userInput: '',
       messages: [],
-      isLoading: false
+      isLoading: false,
+      availableModels: [],
+      selectedModel: 'QwQ',
+      loadingModels: true,
+      modelError: false,
     }
   },
+  created() {
+    this.fetchModels()
+  },
   methods: {
+    async fetchModels() {
+      this.loadingModels = true
+      this.modelError = false
+      try {
+        console.log('Fetching models...')
+        const response = await axios.get('/api/models')
+        console.log('Models response:', response.data)
+        this.availableModels = response.data.models
+        if (this.availableModels.length > 0) {
+          this.selectedModel = this.availableModels[0]
+        }
+      } catch (error) {
+        console.error('Error fetching models:', error)
+        this.modelError = true
+      } finally {
+        this.loadingModels = false
+      }
+    },
     async sendMessage(event) {
       if (event.shiftKey && event.key === 'Enter') return
       if (event.key === 'Enter') event.preventDefault()
@@ -55,14 +98,16 @@ export default {
       this.userInput = ''
 
       try {
-        const response = await axios.post('http://localhost:8081/query', {
-          question: userMessage
+        const response = await axios.post('/api/query', {
+          question: userMessage,
+          model: this.selectedModel
         })
 
         // Add AI response to chat
         this.messages.push({
           type: 'assistant',
-          text: response.data.response
+          text: response.data.response,
+          model: this.selectedModel
         })
       } catch (error) {
         this.messages.push({
@@ -168,5 +213,45 @@ button:disabled {
 
 button:hover:not(:disabled) {
   background-color: #0056b3;
+}
+
+.model-selector {
+  margin: 20px 0;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.model-selector select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  min-width: 200px;
+}
+
+.model-selector select:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.retry-button {
+  padding: 8px 16px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.retry-button:hover {
+  background-color: #c82333;
+}
+
+.message-header {
+  font-size: 0.8em;
+  color: #666;
+  margin-bottom: 5px;
 }
 </style>
