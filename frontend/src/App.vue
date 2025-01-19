@@ -1,20 +1,21 @@
 <template>
   <div class="container">
-    <h1>Ollama AI Assistant</h1>
-
-    <div class="model-selector">
-      <label for="model-select">Select Model:</label>
-      <select v-model="selectedModel" id="model-select" :disabled="loadingModels">
-        <option v-if="loadingModels" value="">Loading models...</option>
-        <option v-else-if="modelError" value="">Error loading models</option>
-        <option v-else-if="availableModels.length === 0" value="">No models available</option>
-        <option v-else v-for="model in availableModels" :key="model" :value="model">
-          {{ model }}
-        </option>
-      </select>
-      <button v-if="modelError" @click="fetchModels" class="retry-button">
-        Retry
-      </button>
+    <div class="header">
+      <h1>Ollama AI Assistant</h1>
+      <div class="model-selector">
+        <label for="model-select">Select Model:</label>
+        <select v-model="selectedModel" id="model-select" :disabled="loadingModels">
+          <option v-if="loadingModels" value="">Loading models...</option>
+          <option v-else-if="modelError" value="">Error loading models</option>
+          <option v-else-if="availableModels.length === 0" value="">No models available</option>
+          <option v-else v-for="model in availableModels" :key="model" :value="model">
+            {{ model }}
+          </option>
+        </select>
+        <button v-if="modelError" @click="fetchModels" class="retry-button">
+          Retry
+        </button>
+      </div>
     </div>
 
     <div class="chat-container">
@@ -131,20 +132,42 @@ export default {
 </script>
 
 <style>
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 .container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   max-width: 100%;
-  margin: 10px;
+  margin: 0;
   padding: 20px;
   font-family: Arial, sans-serif;
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
 h1 {
-  text-align: center;
   color: #333;
+  margin: 0;
+}
+
+.model-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .chat-container {
-  height: calc(100vh - 200px);
+  flex-grow: 1;
   margin-bottom: 20px;
   overflow: hidden;
   display: flex;
@@ -213,15 +236,6 @@ button:disabled {
 
 button:hover:not(:disabled) {
   background-color: #0056b3;
-}
-
-.model-selector {
-  margin: 20px 0;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
 }
 
 .model-selector select {
