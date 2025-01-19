@@ -33,6 +33,7 @@
     <div class="input-container">
       <textarea
         v-model="userInput"
+        @input="adjustTextareaHeight"
         @keyup.enter="sendMessage"
         placeholder="Ask a question..."
         rows="3"
@@ -126,6 +127,11 @@ export default {
     scrollToBottom() {
       const container = this.$refs.messagesContainer
       container.scrollTop = container.scrollHeight
+    },
+    adjustTextareaHeight(event) {
+        const textarea = event.target;
+        textarea.style.height = 'auto';
+        textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }
 }
@@ -208,6 +214,8 @@ h1 {
 .input-container {
   display: flex;
   gap: 10px;
+  padding: 10px 0;
+  margin-bottom: 20px; /* Add margin to create a gap */
 }
 
 textarea {
