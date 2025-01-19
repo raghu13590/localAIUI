@@ -12,6 +12,8 @@ services:
         limits:
           cpus: '0.5'
           memory: 500M
+    networks:
+      - localragnetwork
 
   ollama_langchain:
     build:
@@ -27,6 +29,8 @@ services:
         limits:
           cpus: '1.0'
           memory: 1G
+    networks:
+      - localragnetwork
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -40,3 +44,9 @@ services:
         limits:
           cpus: '0.2'
           memory: 200M
+    networks:
+      - localragnetwork
+
+networks:
+  localragnetwork:
+    external: true
