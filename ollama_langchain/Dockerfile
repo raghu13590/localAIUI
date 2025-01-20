@@ -10,6 +10,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY ollama_langchain.py .
+RUN mkdir -p /app/logs
 EXPOSE 8081
 
 # Add healthcheck for container monitoring
