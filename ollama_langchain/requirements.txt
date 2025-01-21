@@ -1,5 +1,7 @@
-langchain_ollama
-langchain_community
-duckduckgo-search
-flask
-flask-cors
+langchain-ollama>=0.0.3
+langchain-community>=0.0.10
+langchain-core>=0.1.0
+duckduckgo-search>=4.1.1
+flask>=3.0.0
+flask-cors>=4.0.0
+requests>=2.31.0
