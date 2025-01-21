@@ -4,7 +4,7 @@ from config import OLLAMA_BASE_URL, logger
 
 def query_llm_directly(question: str, model: str) -> str:
     try:
-        logger.debug(f"Querying LLM directly with prompt: {question} and model: {model}")
+        logger.debug(f"Querying Ollama LLM with prompt: {question} and model: {model}")
         response = requests.post(
             f"{OLLAMA_BASE_URL}/api/chat",
             json={"model": model, "messages": [{"role": "user", "content": question}]}
@@ -12,7 +12,7 @@ def query_llm_directly(question: str, model: str) -> str:
         response.raise_for_status()
 
         # Log the raw response content for debugging
-        logger.debug(f"Raw response content: {response.content}")
+        logger.debug(f"Raw ollama llm response content: {response.content}")
 
         # Parse the response line by line
         outputs = []
@@ -24,7 +24,7 @@ def query_llm_directly(question: str, model: str) -> str:
                     outputs.append(json_result['message']['content'])
 
         final_output = ''.join(outputs)
-        logger.debug(f"Direct LLM response: {final_output}")
+        logger.debug(f"Ollama LLM response: {final_output}")
         return final_output
     except requests.RequestException as e:
         logger.error(f"Error querying LLM directly: {e}")

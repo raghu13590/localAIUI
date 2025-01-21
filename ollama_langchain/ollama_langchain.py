@@ -23,7 +23,7 @@ def query():
     question = data.get('question')
     model_name = data.get('model')
 
-    logger.debug(f"Received query: {question} using model: {model_name}")
+    logger.debug(f"Querying Ollama Agent with prompt: {question} using model: {model_name}")
 
     try:
         current_llm = OllamaLLM(
@@ -40,16 +40,16 @@ def query():
         )
 
         response = current_agent.invoke([HumanMessage(content=question)])
-        logger.debug(f"Agent response: {response}")
+        logger.debug(f"Ollama agent response: {response}")
 
         if 'output' in response:
             return jsonify({'response': response['output']})
         else:
-            logger.error("No 'output' key in agent response")
-            return jsonify({'error': 'Invalid response from agent'}), 500
+            logger.error("No 'output' key in ollama agent response")
+            return jsonify({'error': 'Invalid ollama agent response'}), 500
 
     except Exception as e:
-        logger.error(f"Error during agent invocation: {str(e)}", exc_info=True)
+        logger.error(f"Error during ollama agent invocation: {str(e)}", exc_info=True)
         return jsonify({'error': str(e)}), 500
 
 def run_without_flask():
@@ -57,13 +57,13 @@ def run_without_flask():
         query = input("Enter your question (or 'quit' to exit): ")
         if query.lower() == 'quit':
             break
-        logger.debug(f"Received query: {query}")
+        logger.debug(f"Querying Ollama Agent with prompt: {query}")
         try:
             response = agent.invoke([HumanMessage(content=query)])
-            logger.debug(f"Agent response: {response}")
+            logger.debug(f"Ollama agent response: {response}")
             print(response['output'])
         except Exception as e:
-            logger.error(f"Error during agent invocation: {str(e)}", exc_info=True)
+            logger.error(f"Error during ollama agent invocation: {str(e)}", exc_info=True)
             print(f"Error: {e}")
 
 @app.route('/direct_query', methods=['POST'])
