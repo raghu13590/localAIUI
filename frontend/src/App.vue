@@ -2,45 +2,32 @@
   <div class="container">
     <div class="header">
       <h1>Ollama AI Assistant</h1>
-      <div class="model-selector">
-        <label for="model-select">Select Model:</label>
-        <select v-model="selectedModel" id="model-select" :disabled="loadingModels">
-          <option v-if="loadingModels" value="">Loading models...</option>
-          <option v-else-if="modelError" value="">Error loading models</option>
-          <option v-else-if="availableModels.length === 0" value="">No models available</option>
-          <option v-else v-for="model in availableModels" :key="model" :value="model">
-            {{ model }}
-          </option>
-        </select>
-        <button v-if="modelError" @click="fetchModels" class="retry-button">
-          Retry
-        </button>
-      </div>
     </div>
-
+    <div class="model-selector">
+      <label for="model-select">Select Model:</label>
+      <select v-model="selectedModel" id="model-select" :disabled="loadingModels">
+        <option v-for="model in availableModels" :key="model" :value="model">{{ model }}</option>
+      </select>
+      <label for="query-type">Query Type:</label>
+      <select v-model="queryType" id="query-type">
+        <option value="langchain">LangChain</option>
+        <option value="direct">Direct LLM</option>
+      </select>
+      <button v-if="modelError" @click="fetchModels" class="retry-button">
+        Retry
+      </button>
+    </div>
     <div class="chat-container">
       <div class="messages" ref="messagesContainer">
-        <div v-for="(message, index) in messages" :key="index"
-             :class="['message', message.type]">
-          <div class="message-header" v-if="message.model">
-            Model: {{ message.model }}
-          </div>
-          <p>{{ message.text }}</p>
+        <div v-for="(message, index) in messages" :key="index" :class="['message', message.type]">
+          <div v-if="message.type === 'assistant'" class="message-header">{{ message.model }}</div>
+          {{ message.text }}
         </div>
       </div>
-    </div>
-
-    <div class="input-container">
-      <textarea
-        v-model="userInput"
-        @input="adjustTextareaHeight"
-        @keyup.enter="sendMessage"
-        placeholder="Ask a question..."
-        rows="3"
-      ></textarea>
-      <button @click="sendMessage" :disabled="isLoading">
-        {{ isLoading ? 'Processing...' : 'Send' }}
-      </button>
+      <div class="input-container">
+        <textarea v-model="userInput" @keydown="handleKeyDown" @input="adjustTextareaHeight" placeholder="Type your message..."></textarea>
+        <button @click="sendMessage" :disabled="isLoading">Send</button>
+      </div>
     </div>
   </div>
 </template>
@@ -52,11 +39,12 @@ export default {
   name: 'App',
   data() {
     return {
+      queryType: 'langchain',
       userInput: '',
       messages: [],
       isLoading: false,
       availableModels: [],
-      selectedModel: 'QwQ',
+      selectedModel: '',
       loadingModels: true,
       modelError: false,
     }
@@ -83,10 +71,13 @@ export default {
         this.loadingModels = false
       }
     },
-    async sendMessage(event) {
-      if (event.shiftKey && event.key === 'Enter') return
-      if (event.key === 'Enter') event.preventDefault()
-
+    handleKeyDown(event) {
+      if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault()
+        this.sendMessage()
+      }
+    },
+    async sendMessage() {
       const userMessage = this.userInput.trim()
       if (!userMessage || this.isLoading) return
 
@@ -99,8 +90,9 @@ export default {
       this.isLoading = true
       this.userInput = ''
 
+      const endpoint = this.queryType === 'langchain' ? '/api/query' : '/api/direct_query'
       try {
-        const response = await axios.post('/api/query', {
+        const response = await axios.post(endpoint, {
           question: userMessage,
           model: this.selectedModel
         })
@@ -129,9 +121,9 @@ export default {
       container.scrollTop = container.scrollHeight
     },
     adjustTextareaHeight(event) {
-        const textarea = event.target;
-        textarea.style.height = 'auto';
-        textarea.style.height = `${textarea.scrollHeight}px`;
+      const textarea = event.target
+      textarea.style.height = 'auto'
+      textarea.style.height = `${textarea.scrollHeight}px`
     }
   }
 }
@@ -215,7 +207,7 @@ h1 {
   display: flex;
   gap: 10px;
   padding: 10px 0;
-  margin-bottom: 20px; /* Add margin to create a gap */
+  margin-top: auto; /* Ensure the input container is at the bottom */
 }
 
 textarea {

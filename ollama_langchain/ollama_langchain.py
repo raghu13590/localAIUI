@@ -7,6 +7,7 @@ from model_initialization import available_models
 from langchain_ollama import OllamaLLM
 from langchain_core.messages import HumanMessage
 from langchain.agents import initialize_agent, AgentType
+from direct_llm import query_llm_directly
 
 app = Flask(__name__)
 CORS(app)
@@ -64,6 +65,21 @@ def run_without_flask():
         except Exception as e:
             logger.error(f"Error during agent invocation: {str(e)}", exc_info=True)
             print(f"Error: {e}")
+
+@app.route('/direct_query', methods=['POST'])
+def direct_query():
+    data = request.json
+    question = data.get('question')
+    model_name = data.get('model')
+
+    logger.debug(f"Received direct query: {question} using model: {model_name}")
+
+    try:
+        response = query_llm_directly(question, model_name)
+        return jsonify({'response': response})
+    except Exception as e:
+        logger.error(f"Error during direct LLM query: {str(e)}", exc_info=True)
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == "__main__":
     if len(sys.argv) > 1 and sys.argv[1] == '--debug':
