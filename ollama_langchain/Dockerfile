@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ollama_langchain.py .
+COPY main.py .
 RUN mkdir -p /app/logs
 EXPOSE 8081
 
@@ -17,4 +17,4 @@ EXPOSE 8081
 HEALTHCHECK --interval=30s --timeout=3s \
   CMD curl -f http://localhost:8081/ || exit 1
 
-CMD ["python", "ollama_langchain.py"]
+CMD ["python", "main.py"]

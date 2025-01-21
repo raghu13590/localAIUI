@@ -1,6 +1,7 @@
 import requests
 import json
-from config import OLLAMA_BASE_URL, logger
+from app.core.config import OLLAMA_BASE_URL
+from app.core.logging import logger
 
 def query_llm_directly(question: str, model: str) -> str:
     try:

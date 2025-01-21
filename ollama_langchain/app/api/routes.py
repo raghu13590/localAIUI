@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from app.core.config import logger
+from app.core.logging import logger
 from app.services.model_service import get_available_models
 from app.services.agent_service import create_agent
 from app.services.llm_service import query_llm_directly
