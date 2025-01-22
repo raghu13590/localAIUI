@@ -24,7 +24,7 @@ docker-compose up --build
 
 This command will build and start the following services:
 - `searxng`: A search engine service.
-- `ollama_langchain`: The backend service for handling AI queries.
+- `ollama`: The backend service for handling AI queries.
 - `frontend`: The frontend service for the web application.
 
 ### Step 3: Access the Application
@@ -48,7 +48,7 @@ The `frontend/Dockerfile` builds the Vue.js application and serves it using Ngin
 
 ### Backend Dockerfile
 
-The `ollama_langchain/Dockerfile` sets up the Flask application and installs the necessary dependencies.
+The `ollama/Dockerfile` sets up the Flask application and installs the necessary dependencies.
 
 ### Docker Compose
 
