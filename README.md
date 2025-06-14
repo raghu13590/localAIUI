@@ -1,4 +1,4 @@
-# localRAG
+# localAIUI
 
 This project is a web-based application that allows users to interact with locally installed Ollama models and also use LangChain to interface with Ollama llms. The application consists of a frontend built with Vue.js and a backend built with Flask. The backend interacts with AI models and provides responses to user queries.
 
