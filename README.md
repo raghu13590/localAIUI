@@ -4,8 +4,7 @@ This project is a web-based application that allows users to interact with local
 
 ## Prerequisites
 
-- Docker
-- Docker Compose
+- Docker Desktop
 
 ## Setup
 
