@@ -13,7 +13,7 @@ services:
           cpus: '0.5'
           memory: 500M
     networks:
-      - localragnetwork
+      - localainetwork
 
   ollama:
     build:
@@ -31,7 +31,7 @@ services:
           cpus: '1.0'
           memory: 1G
     networks:
-      - localragnetwork
+      - localainetwork
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -43,8 +43,8 @@ services:
     depends_on:
       - ollama
     networks:
-      - localragnetwork
+      - localainetwork
 
 networks:
-  localragnetwork:
+  localainetwork:
     external: true

@@ -5,6 +5,8 @@ This project is a web-based application that allows users to interact with local
 ## Prerequisites
 
 - Docker Desktop
+- Ollama installed locally
+- LLM models available in Ollama
 
 ## Setup
 
