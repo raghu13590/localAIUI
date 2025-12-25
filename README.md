@@ -24,7 +24,7 @@ docker-compose up --build
 ```
 
 This command will build and start the following services:
-- `searxng`: A search engine service.
+
 - `ollama`: The backend service for handling AI queries.
 - `frontend`: The frontend service for the web application.
 

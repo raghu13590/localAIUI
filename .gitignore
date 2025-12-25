@@ -1,2 +1,24 @@
 /.idea/
 /ollama/logs/
+
+# OS specific
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.venv
+venv/
+ENV/
+env/
+
+# Node.js / Frontend
+node_modules/
+dist/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.eslintcache

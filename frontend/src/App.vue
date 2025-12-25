@@ -95,7 +95,7 @@ export default {
         const response = await axios.post(endpoint, {
           question: userMessage,
           model: this.selectedModel
-        })
+        }, { timeout: 300000 }) // Set timeout to 300 seconds
 
         // Add AI response to chat
         this.messages.push({

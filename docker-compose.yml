@@ -1,19 +1,4 @@
 services:
-  searxng:
-    image: searxng/searxng
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./config:/etc/searxng
-    environment:
-      - SEARXNG_BASE_URL=http://localhost:8080/
-    deploy:
-      resources:
-        limits:
-          cpus: '0.5'
-          memory: 500M
-    networks:
-      - localainetwork
 
   ollama:
     build:

@@ -5,6 +5,7 @@ from app.services.model_service import get_available_models
 from app.services.agent_service import create_agent
 from app.services.llm_service import query_llm_directly
 from langchain_core.messages import HumanMessage
+from app.services.agent_service import create_agent, extract_and_display_thoughts
 
 app = Flask(__name__)
 CORS(app)
@@ -24,14 +25,25 @@ def query():
 
     try:
         current_agent = create_agent(model_name)
-        response = current_agent.invoke([HumanMessage(content=question)])
+        response = current_agent.invoke({"input": question})
         logger.debug(f"Ollama agent response: {response}")
 
-        if 'output' in response:
-            return jsonify({'response': response['output']})
+        # Use the improved thought extraction function
+        thoughts = extract_and_display_thoughts(response, current_agent)
+
+        # Get final answer
+        output = None
+        if isinstance(response, dict) and 'output' in response:
+            output = response['output']
+        elif hasattr(response, 'content'):
+            output = response.content
         else:
-            logger.error("No 'output' key in ollama agent response")
-            return jsonify({'error': 'Invalid ollama agent response'}), 500
+            output = str(response)
+
+        return jsonify({
+            'response': output,
+            'thoughts': thoughts
+        })
 
     except Exception as e:
         logger.error(f"Error during ollama agent invocation: {str(e)}", exc_info=True)
@@ -50,4 +62,4 @@ def direct_query():
         return jsonify({'response': response})
     except Exception as e:
         logger.error(f"Error during direct LLM query: {str(e)}", exc_info=True)
-        return jsonify({'error': str(e)}), 500 
+        return jsonify({'error': str(e)}), 500
